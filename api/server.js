@@ -6,7 +6,8 @@ const PORT = 8080;
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Welcome to the Header Parser Microservice',
+    message: 'Welcome to the Header Parser Micro service',
+    status: status,
   });
 });
 
