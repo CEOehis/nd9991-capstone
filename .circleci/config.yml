@@ -1,14 +1,25 @@
 version: 2.1
 
 jobs:
-  hello:
+  lint-api:
     docker:
       - image: circleci/node:13.8.0
+    working_directory: ~/project/api
     steps:
       - checkout
-      - run: echo "Hello"
+      - run: npm install
+      - run:
+          name: Run lint analysis
+          command: npm run lint
+
 
 workflows:
   default:
     jobs:
-      - hello
+      - lint-api
+      # - test-api
+      # - check-vulnerabilities
+      # - deploy-infrastructure # deploys Kubernetes cluster infrastructure
+      # - configure-infrastructure
+      # - deploy-api
+      # - smoke-test
