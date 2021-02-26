@@ -7,7 +7,6 @@ const PORT = 8080;
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the Header Parser Micro service',
-    status: status,
   });
 });
 
@@ -21,4 +20,9 @@ app.get('/whoami', (req, res) => {
   res.json(userDetails);
 });
 
-app.listen(PORT, console.log('Server started listening on port: ', PORT));
+const server = app.listen(PORT, console.log('Server started listening on port: ', PORT));
+
+module.exports = {
+  app,
+  server,
+};

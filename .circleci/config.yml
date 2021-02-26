@@ -13,13 +13,36 @@ jobs:
           name: Run lint analysis
           command: npm run lint
 
+  test-api:
+    docker:
+      - image: circleci/node:13.8.0
+    working_directory: ~/project/api
+    steps:
+      - checkout:
+          path: ~/project
+      - run: npm install
+      - run:
+          name: Run unit tests
+          command: npm run test
+
+  check-vulnerabilities:
+    docker:
+      - image: circleci/node:13.8.0
+    working_directory: ~/project/api
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: Run security audit on packages
+          command: |
+            npm audit --audit-level=critical
 
 workflows:
   default:
     jobs:
       - lint-api
-      # - test-api
-      # - check-vulnerabilities
+      - test-api
+      - check-vulnerabilities
       # - deploy-infrastructure # deploys Kubernetes cluster infrastructure
       # - configure-infrastructure
       # - deploy-api
