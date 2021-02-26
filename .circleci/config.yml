@@ -6,7 +6,8 @@ jobs:
       - image: circleci/node:13.8.0
     working_directory: ~/project/api
     steps:
-      - checkout
+      - checkout:
+          path: ~/project
       - run: npm install
       - run:
           name: Run lint analysis
