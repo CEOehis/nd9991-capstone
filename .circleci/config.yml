@@ -1,0 +1,14 @@
+version: 2.1
+
+jobs:
+  hello:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: echo "Hello"
+
+workflows:
+  default:
+    jobs:
+      - hello
