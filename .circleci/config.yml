@@ -62,7 +62,12 @@ jobs:
       - checkout
       - kubernetes/install-kubectl
       - run: aws eks --region us-east-2 update-kubeconfig --name capstone-api
-      - run: kubectl apply -f infrastructure/config/deployment.yml
+      - run:
+          name: Run deployment and Service in deployment config
+          command: kubectl apply -f infrastructure/config/deployment.yml
+      - run:
+          name: Trigger rolling update
+          command: kubectl rollout restart deployment capstone-api
       - run: kubectl get svc capstone-api
 
 workflows:
