@@ -37,12 +37,29 @@ jobs:
           command: |
             npm audit --audit-level=critical
 
+  publish-docker-image:
+    docker:
+      - image: cimg/base:2020.09
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Set environment variables
+          command: |
+            echo 'export DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME' >> $BASH_ENV
+            echo 'export DOCKER_HUB_PASSWORD=$DOCKER_HUB_PASSWORD' >> $BASH_ENV
+      - run:
+          name: Build and publish docker image
+          command: ./infrastructure/scripts/publish_docker.sh
+
 workflows:
   default:
     jobs:
       - lint-api
       - test-api
       - check-vulnerabilities
+      - publish-docker-image:
+          requires: [lint-api, test-api, check-vulnerabilities]
       # - deploy-infrastructure # deploys Kubernetes cluster infrastructure
       # - configure-infrastructure
       # - deploy-api
