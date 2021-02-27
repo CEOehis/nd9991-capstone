@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  kubernetes: circleci/kubernetes@0.11.2
+
 jobs:
   lint-api:
     docker:
@@ -52,6 +55,16 @@ jobs:
           name: Build and publish docker image
           command: ./infrastructure/scripts/publish_docker.sh
 
+  deploy-api:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - kubernetes/install-kubectl
+      - run: aws eks --region us-east-2 update-kubeconfig --name capstone-api
+      - run: kubectl apply -f infrastructure/config/deployment.yml
+      - run: kubectl get svc capstone-api
+
 workflows:
   default:
     jobs:
@@ -60,7 +73,12 @@ workflows:
       - check-vulnerabilities
       - publish-docker-image:
           requires: [lint-api, test-api, check-vulnerabilities]
-      # - deploy-infrastructure # deploys Kubernetes cluster infrastructure
-      # - configure-infrastructure
-      # - deploy-api
+          filters:
+            branches:
+              only: main
+      - deploy-api:
+          requires: [publish-docker-image]
+          filters:
+            branches:
+              only: main
       # - smoke-test
